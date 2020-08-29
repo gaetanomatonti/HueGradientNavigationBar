@@ -15,6 +15,15 @@ class ViewController: UIViewController {
         HueNavigationBarTitleView()
     }()
     
+    lazy var navigationBarFooter: HueNavigationBarFooter = {
+        let footer = HueNavigationBarFooter()
+        footer.colors = colors
+        footer.insets = navigationFooterInsets
+        footer.sliderDelegate = self
+        footer.translatesAutoresizingMaskIntoConstraints = false
+        return footer
+    }()
+    
     private var navigationFooterInsets: UIEdgeInsets {
         UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
     }
@@ -29,9 +38,10 @@ class ViewController: UIViewController {
         super.loadView()
         
         view.backgroundColor = .white
+        
         setupNavigationBar()
     }
-    
+        
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
@@ -47,20 +57,29 @@ class ViewController: UIViewController {
         
         navigationItem.titleView = titleView
         
-        let footer = HueNavigationBarFooter()
-        footer.colors = colors
-        footer.insets = navigationFooterInsets
-        footer.translatesAutoresizingMaskIntoConstraints = false
-
-        navigationBar.addSubview(footer)
+        view.addSubview(navigationBarFooter)
         
         NSLayoutConstraint.activate([
-            footer.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
-            footer.leadingAnchor.constraint(equalTo: navigationBar.leadingAnchor),
-            footer.trailingAnchor.constraint(equalTo: navigationBar.trailingAnchor),
-            footer.heightAnchor.constraint(equalToConstant: navigationFooterHeight)
+            navigationBarFooter.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            navigationBarFooter.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            navigationBarFooter.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            navigationBarFooter.heightAnchor.constraint(equalToConstant: navigationFooterHeight)
         ])
+        
+        updateTitle(with: Double(navigationBarFooter.slider.value))
+    }
+    
+    func updateTitle(with value: Double) {
+        let value = Int(value * 100)
+        titleView.text = "\(value)%"
     }
 
 }
 
+extension ViewController: HueSliderDelegate {
+    
+    func hueSlider(valueDidChangeTo value: Double) {
+        updateTitle(with: value)
+    }
+    
+}

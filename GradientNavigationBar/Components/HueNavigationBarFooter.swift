@@ -10,7 +10,11 @@ import UIKit
 
 final class HueNavigationBarFooter: UIView {
     
-    weak var sliderDelegate: HueSliderDelegate?
+    weak var sliderDelegate: HueSliderDelegate? {
+        willSet {
+            slider.delegate = newValue
+        }
+    }
     
     var colors: [UIColor] = [] {
         willSet {
