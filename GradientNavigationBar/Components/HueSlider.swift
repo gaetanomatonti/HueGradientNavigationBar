@@ -113,7 +113,7 @@ final class HueSlider: UIView {
     private func updateValue(from point: CGPoint) {
         guard bounds.inset(by: trackInsets).contains(point) else { return }
         handle.center.x = point.x
-        value = point.x / bounds.inset(by: trackInsets).maxX
+        value = (point.x - sliderRadius) / bounds.inset(by: trackInsets).width
     }
     
     private func updateFilledGradient() {
