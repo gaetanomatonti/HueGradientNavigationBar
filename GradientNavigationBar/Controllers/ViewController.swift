@@ -37,7 +37,7 @@ class ViewController: UIViewController {
     override func loadView() {
         super.loadView()
         
-        view.backgroundColor = .white
+        view.backgroundColor = .secondarySystemBackground
         
         setupNavigationBar()
     }
@@ -70,7 +70,7 @@ class ViewController: UIViewController {
     }
     
     func updateTitle(with value: Double) {
-        let value = Int(value * 100)
+        let value = Int((value * 100).rounded())
         titleView.text = "\(value)%"
     }
 

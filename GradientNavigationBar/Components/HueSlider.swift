@@ -16,7 +16,7 @@ final class HueSlider: UIView {
     
     weak var delegate: HueSliderDelegate?
     
-    var value: CGFloat = 0.5 {
+    var value: CGFloat = 0 {
         willSet {
             delegate?.hueSlider(valueDidChangeTo: Double(newValue))
             setNeedsLayout()
@@ -26,11 +26,7 @@ final class HueSlider: UIView {
     private var totalScaledValue: CGFloat {
         bounds.width * value
     }
-    
-    private var handleX: CGFloat {
-        totalScaledValue + ((1 - value) * sliderRadius)
-    }
-    
+        
     private var trackInsets: UIEdgeInsets {
         UIEdgeInsets(top: 0, left: sliderRadius, bottom: 0, right: sliderRadius)
     }
@@ -77,6 +73,11 @@ final class HueSlider: UIView {
         let view = UIView()
         view.backgroundColor = .white
         view.addGestureRecognizer(panGesture)
+        
+        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.shadowRadius = 2
+        view.layer.shadowOpacity = 0.15
+        view.layer.shadowOffset = CGSize(width: -1, height: 2)
         return view
     }()
     
@@ -86,8 +87,6 @@ final class HueSlider: UIView {
         addSubview(sliderTrack)
         addSubview(filledTrack)
         addSubview(handle)
-        
-        
         
         backgroundColor = .clear
     }
@@ -103,19 +102,18 @@ final class HueSlider: UIView {
         sliderTrack.layer.cornerRadius = sliderRadius
         
         handle.frame.size = CGSize(width: sliderRadius * 2, height: sliderRadius * 2)
-        handle.center.x = handleX
         handle.layer.cornerRadius = sliderRadius
 
         filledTrack.frame.size.height = sliderRadius * 2
-        filledTrack.frame.size.width = handleX
+        filledTrack.frame.size.width = handle.center.x
         
         updateFilledGradient()
     }
     
     private func updateValue(from point: CGPoint) {
-        guard bounds.contains(point) else { return }
+        guard bounds.inset(by: trackInsets).contains(point) else { return }
         handle.center.x = point.x
-        value = point.x / bounds.width
+        value = point.x / bounds.inset(by: trackInsets).maxX
     }
     
     private func updateFilledGradient() {
