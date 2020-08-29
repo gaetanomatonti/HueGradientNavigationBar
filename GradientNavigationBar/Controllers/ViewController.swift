@@ -15,6 +15,16 @@ class ViewController: UIViewController {
         HueNavigationBarTitleView()
     }()
     
+    private var navigationFooterInsets: UIEdgeInsets {
+        UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
+    }
+    
+    private var navigationFooterHeight: CGFloat {
+        sliderHeight + navigationFooterInsets.top + navigationFooterInsets.bottom
+    }
+    
+    private var sliderHeight: CGFloat { 24 }
+    
     override func loadView() {
         super.loadView()
         
@@ -37,16 +47,18 @@ class ViewController: UIViewController {
         
         navigationItem.titleView = titleView
         
-        let slider = HueSlider()
-        slider.colors = colors
-        navigationBar.addSubview(slider)
+        let footer = HueNavigationBarFooter()
+        footer.colors = colors
+        footer.insets = navigationFooterInsets
+        footer.translatesAutoresizingMaskIntoConstraints = false
+
+        navigationBar.addSubview(footer)
         
-        slider.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            slider.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
-            slider.leadingAnchor.constraint(equalTo: navigationBar.leadingAnchor),
-            slider.trailingAnchor.constraint(equalTo: navigationBar.trailingAnchor),
-            slider.heightAnchor.constraint(equalToConstant: 24)
+            footer.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
+            footer.leadingAnchor.constraint(equalTo: navigationBar.leadingAnchor),
+            footer.trailingAnchor.constraint(equalTo: navigationBar.trailingAnchor),
+            footer.heightAnchor.constraint(equalToConstant: navigationFooterHeight)
         ])
     }
 

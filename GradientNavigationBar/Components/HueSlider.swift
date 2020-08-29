@@ -16,34 +16,10 @@ final class HueSlider: UIView {
     
     weak var delegate: HueSliderDelegate?
     
-    var sliderRadius: CGFloat = 6 {
-        willSet {
-            maskLayer.path = maskPath.cgPath
-            sliderTrack.layer.cornerRadius = newValue
-        }
+    private var sliderRadius: CGFloat {
+        frame.height / 2
     }
     
-    var colors: [UIColor] = [] {
-        willSet {
-            guard !newValue.isEmpty else { return }
-            updateGradient()
-        }
-    }
-    
-    private var maskPath: UIBezierPath {
-        UIBezierPath(
-            roundedRect: bounds,
-            byRoundingCorners: [.bottomLeft, .bottomRight],
-            cornerRadii: CGSize(width: sliderRadius, height: sliderRadius)
-        )
-    }
-    
-    lazy var maskLayer: CAShapeLayer = {
-        let mask = CAShapeLayer()
-        mask.path = maskPath.cgPath
-        return mask
-    }()
-        
     lazy var sliderTrack: UIVisualEffectView = {
         let effect = UIBlurEffect(style: .systemUltraThinMaterialDark)
         let view = UIVisualEffectView(effect: effect)
@@ -68,26 +44,8 @@ final class HueSlider: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        sliderRadius = frame.height / 2
         sliderTrack.frame = bounds
-        updateGradient()
+        sliderTrack.layer.cornerRadius = sliderRadius
     }
     
-    func updateGradient() {
-        if let sublayers = layer.sublayers {
-            if sublayers.contains(where: { $0 is CAGradientLayer }) {
-                layer.sublayers?.removeAll(where: { $0 is CAGradientLayer })
-            }
-            layer.insertSublayer(createMaskedGradient(), at: 0)
-        } else {
-            layer.insertSublayer(createMaskedGradient(), at: 0)
-        }
-    }
-    
-    func createMaskedGradient() -> CAGradientLayer {
-        let gradient = createGradient(colors: colors)
-        gradient.mask = maskLayer
-        return gradient
-    }
-        
 }
