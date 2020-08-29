@@ -9,7 +9,7 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    let colors: [UIColor] = [.systemRed, .systemOrange, .systemYellow, .systemGreen, .systemBlue, .systemPurple]
+    let colors: [UIColor] = [.systemTeal, .systemPurple]
     
     let titleView: HueNavigationBarTitleView = {
         HueNavigationBarTitleView()
